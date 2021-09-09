@@ -10,6 +10,7 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.LiteralText;
+import net.minecraft.text.MutableText;
 import net.minecraft.util.Formatting;
 
 import java.util.ArrayList;
@@ -49,7 +50,7 @@ public class NotificationManager implements ModInitializer {
 
             for(DataContainer Notification : playerMessages.getDataContainers()) {
                 if (Notification.getUuid("player").equals(handler.getPlayer().getUuid())) {
-                    send(handler.getPlayer().getUuid(), Notification.getString("message"), Notification.getString("type"));
+                    send(handler.getPlayer().getUuid(), Notification.getMutableText("message"), Notification.getString("type"));
                     deleteList.add(Notification);
                 }
             }
@@ -62,14 +63,17 @@ public class NotificationManager implements ModInitializer {
     }
 
     public static void send(UUID uuid, String message, String type) {
+        send(uuid, new LiteralText(message).formatted(), type);
+    }
+    public static void send(UUID uuid, MutableText message, String type) {
         PlayerEntity player = onlinePlayers.get(uuid);
         if (player != null) {
             switch (type) {
-                case "ACHIEVEMENT" -> player.sendMessage(new LiteralText(message).formatted(Formatting.AQUA), false);
-                case "WARN" -> player.sendMessage(new LiteralText(message).formatted(Formatting.GOLD).formatted(Formatting.ITALIC), false);
-                case "ERROR" -> player.sendMessage(new LiteralText(message).formatted(Formatting.DARK_RED).formatted(Formatting.BOLD).formatted(Formatting.UNDERLINE), false);
-                case "ENDER" -> player.sendMessage(new LiteralText(message).formatted(Formatting.UNDERLINE).formatted(Formatting.STRIKETHROUGH).formatted(Formatting.ITALIC).formatted(Formatting.DARK_PURPLE).formatted(Formatting.OBFUSCATED), false);
-                default -> player.sendMessage(new LiteralText(message), false);
+                case "ACHIEVEMENT" -> player.sendMessage(message.formatted(Formatting.AQUA), false);
+                case "WARN" -> player.sendMessage(message.formatted(Formatting.GOLD).formatted(Formatting.ITALIC), false);
+                case "ERROR" -> player.sendMessage(message.formatted(Formatting.DARK_RED).formatted(Formatting.BOLD).formatted(Formatting.UNDERLINE), false);
+                case "ENDER" -> player.sendMessage(message.formatted(Formatting.UNDERLINE).formatted(Formatting.STRIKETHROUGH).formatted(Formatting.ITALIC).formatted(Formatting.DARK_PURPLE).formatted(Formatting.OBFUSCATED), false);
+                default -> player.sendMessage(message, false);
             }
         }
         else {
