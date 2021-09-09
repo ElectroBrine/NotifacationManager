@@ -12,6 +12,8 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.MutableText;
 import net.minecraft.util.Formatting;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Level;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,36 +32,41 @@ public class NotificationManager implements ModInitializer {
         AutoConfig.register(Settings.class, JanksonConfigSerializer::new);
         settings = AutoConfig.getConfigHolder(Settings.class).getConfig();
 
-        boolean validConfig = !Objects.equals(Settings.SQLITE_DIRECTORY, "/path/to/folder");
+
+
+        boolean validConfig = !Objects.equals(settings.SQLITE_DIRECTORY, "/path/to/folder");
         if (validConfig) {
+            log(Level.INFO, "Notifying our Managers");
             Database.TYPE = SqlTypes.SQLITE;
-            Database.DATABASE_NAME = Settings.DATABASE_NAME;
-            Database.SQLITE_DIRECTORY = Settings.SQLITE_DIRECTORY;
+            Database.DATABASE_NAME = settings.DATABASE_NAME;
+            Database.SQLITE_DIRECTORY = settings.SQLITE_DIRECTORY;
             Database.init();
-        }
-        else System.out.println("Please change the file path in the config");
 
-        playerMessages = new Table("Notifications");
-        count = playerMessages.getIds().size();
+            playerMessages = new Table("Notifications");
+            count = playerMessages.getIds().size();
 
 
+            ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
+                ArrayList<DataContainer> deleteList = new ArrayList<>();
+                onlinePlayers.put(handler.getPlayer().getUuid(), handler.getPlayer());
 
-        ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
-            ArrayList<DataContainer> deleteList = new ArrayList<>();
-            onlinePlayers.put(handler.getPlayer().getUuid(), handler.getPlayer());
-
-            for(DataContainer Notification : playerMessages.getDataContainers()) {
-                if (Notification.getUuid("player").equals(handler.getPlayer().getUuid())) {
-                    send(handler.getPlayer().getUuid(), Notification.getMutableText("message"), Notification.getString("type"));
-                    deleteList.add(Notification);
+                for (DataContainer Notification : playerMessages.getDataContainers()) {
+                    if (Notification.getUuid("player").equals(handler.getPlayer().getUuid())) {
+                        send(handler.getPlayer().getUuid(), Notification.getMutableText("message"), Notification.getString("type"));
+                        deleteList.add(Notification);
+                    }
                 }
-            }
-            for(DataContainer notification : deleteList) playerMessages.drop(notification);
-        });
+                for (DataContainer notification : deleteList) playerMessages.drop(notification);
+            });
 
-        ServerPlayConnectionEvents.DISCONNECT.register(((handler, server) -> {
-            onlinePlayers.remove(handler.getPlayer().getUuid());
-        }));
+            ServerPlayConnectionEvents.DISCONNECT.register(((handler, server) -> {
+                onlinePlayers.remove(handler.getPlayer().getUuid());
+            }));
+        }
+        else log(Level.INFO, "Please put in a valid file path");
+    }
+    public static void log(Level level, String message) {
+        LogManager.getLogger().log(level, "[Notification Manager] " + message);
     }
 
     public static void send(UUID uuid, String message, String type) {
