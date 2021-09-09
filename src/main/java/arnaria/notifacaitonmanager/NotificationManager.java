@@ -65,6 +65,7 @@ public class NotificationManager implements ModInitializer {
     public static void send(UUID uuid, String message, String type) {
         send(uuid, new LiteralText(message).formatted(), type);
     }
+
     public static void send(UUID uuid, MutableText message, String type) {
         PlayerEntity player = onlinePlayers.get(uuid);
         if (player != null) {
