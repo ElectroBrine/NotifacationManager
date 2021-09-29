@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
-  "id": "notifacaitonmanager",
+  "id": "notifacaitonlib",
   "version": "${version}",
-  "name": "notifacaitonmanager",
+  "name": "notifacaitonlib",
   "description": "",
   "authors": [],
   "contact": {},
@@ -10,7 +10,7 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "arnaria.notifacaitonmanager.NotificationManager"
+      "arnaria.notifacaitonlib.NotificationLib"
     ]
   },
   "depends": {

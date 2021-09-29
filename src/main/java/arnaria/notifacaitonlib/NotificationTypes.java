@@ -1,4 +1,4 @@
-package arnaria.notifacaitonmanager;
+package arnaria.notifacaitonlib;
 
 public class NotificationTypes {
     public static String ACHIEVEMENT = "ACHIEVEMENT";

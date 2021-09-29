@@ -1,4 +1,4 @@
-package arnaria.notifacaitonmanager;
+package arnaria.notifacaitonlib;
 
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;
