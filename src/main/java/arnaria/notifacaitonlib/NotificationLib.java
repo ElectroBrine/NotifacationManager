@@ -3,20 +3,17 @@ package arnaria.notifacaitonlib;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.JanksonConfigSerializer;
 import mrnavastar.sqlib.api.DataContainer;
-import mrnavastar.sqlib.api.SqlTypes;
 import mrnavastar.sqlib.api.Table;
-import mrnavastar.sqlib.util.Database;
+import mrnavastar.sqlib.api.databases.SQLiteDatabase;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.text.MutableText;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Level;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
 import java.util.UUID;
@@ -37,13 +34,8 @@ public class NotificationLib implements ModInitializer {
         boolean validConfig = !Objects.equals(settings.SQLITE_DIRECTORY, "/path/to/folder");
         if (validConfig) {
             log(Level.INFO, "Notifying our Managers");
-            Database.TYPE = SqlTypes.SQLITE;
-            Database.DATABASE_NAME = settings.DATABASE_NAME;
-            Database.SQLITE_DIRECTORY = settings.SQLITE_DIRECTORY;
-            Database.init();
-
-            playerMessages = new Table("Notifications");
-
+            SQLiteDatabase database = new SQLiteDatabase(settings.DATABASE_NAME, settings.SQLITE_DIRECTORY);
+            database.createTable("Notifications");
 
             ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
                 PlayerEntity player = handler.getPlayer();
@@ -56,12 +48,10 @@ public class NotificationLib implements ModInitializer {
                         MutableText Message = (MutableText) Notification.get("message");
                         NotificationManager.send(player.getUuid(), Message, Notification.getString("type"));
                     }
-                    PlayerData.put("Notifications", new NbtList());
+                    playerMessages.createDataContainer(player.getUuidAsString());
 
                 } else {
-                    DataContainer playerNotifications = new DataContainer(player.getUuidAsString());
-                    playerMessages.put(playerNotifications);
-                    playerNotifications.put("Notifications", new NbtList());
+                    playerMessages.createDataContainer(player.getUuidAsString());
                 }
             });
 

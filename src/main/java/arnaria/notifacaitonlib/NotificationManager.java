@@ -49,8 +49,7 @@ public class NotificationManager {
 
     public static NbtList getNotifications(UUID uuid) {
         DataContainer PlayerData = playerMessages.get(uuid.toString());
-        NbtList Notifications = (NbtList) PlayerData.getNbt("notifications");
-        return Notifications;
+        return (NbtList) PlayerData.getNbt("notifications");
 
     }
 }
