@@ -29,8 +29,6 @@ public class NotificationLib implements ModInitializer {
         AutoConfig.register(Settings.class, JanksonConfigSerializer::new);
         settings = AutoConfig.getConfigHolder(Settings.class).getConfig();
 
-
-
         boolean validConfig = !Objects.equals(settings.SQLITE_DIRECTORY, "/path/to/folder");
         if (validConfig) {
             log(Level.INFO, "Notifying our Managers");
