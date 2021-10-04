@@ -1,7 +1,7 @@
 package arnaria.notifacaitonlib;
 
 import mrnavastar.sqlib.api.DataContainer;
-import mrnavastar.sqlib.api.Table;
+
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
@@ -13,8 +13,9 @@ import net.minecraft.util.Formatting;
 import java.util.HashMap;
 import java.util.UUID;
 
+import static arnaria.notifacaitonlib.NotificationLib.playerMessages;
+
 public class NotificationManager {
-    private static Table playerMessages;
     private static final HashMap<UUID, PlayerEntity> onlinePlayers = new HashMap<>();
 
     public static void send(UUID uuid, String message, String type) {
@@ -35,6 +36,7 @@ public class NotificationManager {
             }
         }
         else {
+
             DataContainer PlayerData = playerMessages.get(uuid.toString());
 
             NbtList Notifications = (NbtList) PlayerData.getNbt("notifications");

@@ -6,6 +6,7 @@ import mrnavastar.sqlib.api.DataContainer;
 import mrnavastar.sqlib.api.Table;
 import mrnavastar.sqlib.api.databases.SQLiteDatabase;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
@@ -22,6 +23,7 @@ import java.util.UUID;
 public class NotificationLib implements ModInitializer {
     private static final HashMap<UUID, PlayerEntity> onlinePlayers = new HashMap<>();
     public static Settings settings;
+    public static Table playerMessages;
 
     @Override
     public void onInitialize() {
@@ -30,9 +32,12 @@ public class NotificationLib implements ModInitializer {
 
         boolean validConfig = !Objects.equals(settings.SQLITE_DIRECTORY, "/path/to/folder");
         if (validConfig) {
-            log(Level.INFO, "Notifying our Managers");
+            log("Notifying our Managers");
             SQLiteDatabase database = new SQLiteDatabase(settings.DATABASE_NAME, settings.SQLITE_DIRECTORY);
-            Table playerMessages = database.createTable("Notifications");
+            ServerLifecycleEvents.SERVER_STARTED.register(server -> {
+                playerMessages = database.createTable("Notifications");
+            });
+
 
             ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
                 PlayerEntity player = handler.getPlayer();
@@ -57,9 +62,9 @@ public class NotificationLib implements ModInitializer {
                 onlinePlayers.remove(player.getUuid());
             }));
         }
-        else log(Level.INFO, "Please put in a valid file path");
+        else log("Please put in a valid file path");
     }
-    private static void log(Level level, String message) {
-        LogManager.getLogger().log(level, "[Notification Manager] " + message);
+    private static void log(String message) {
+        LogManager.getLogger().log(Level.INFO, "[Notification Manager] " + message);
     }
 }
