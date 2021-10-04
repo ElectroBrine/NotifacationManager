@@ -20,7 +20,6 @@ import java.util.UUID;
 
 
 public class NotificationLib implements ModInitializer {
-    private static Table playerMessages;
     private static final HashMap<UUID, PlayerEntity> onlinePlayers = new HashMap<>();
     public static Settings settings;
 
@@ -33,7 +32,7 @@ public class NotificationLib implements ModInitializer {
         if (validConfig) {
             log(Level.INFO, "Notifying our Managers");
             SQLiteDatabase database = new SQLiteDatabase(settings.DATABASE_NAME, settings.SQLITE_DIRECTORY);
-            database.createTable("Notifications");
+            Table playerMessages = database.createTable("Notifications");
 
             ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
                 PlayerEntity player = handler.getPlayer();
