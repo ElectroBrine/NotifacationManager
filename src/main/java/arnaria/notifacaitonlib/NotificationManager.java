@@ -10,13 +10,12 @@ import net.minecraft.text.LiteralText;
 import net.minecraft.text.MutableText;
 import net.minecraft.util.Formatting;
 
-import java.util.HashMap;
 import java.util.UUID;
 
+import static arnaria.notifacaitonlib.NotificationLib.onlinePlayers;
 import static arnaria.notifacaitonlib.NotificationLib.playerMessages;
 
 public class NotificationManager {
-    private static final HashMap<UUID, PlayerEntity> onlinePlayers = new HashMap<>();
 
     public static void send(UUID uuid, String message, String type) {
         send(uuid, new LiteralText(message).formatted(), type);
@@ -37,9 +36,11 @@ public class NotificationManager {
         }
         else {
 
-            DataContainer PlayerData = playerMessages.get(uuid.toString());
+            DataContainer PlayerData = playerMessages.get(uuid);
 
-            NbtList Notifications = (NbtList) PlayerData.getNbt("notifications");
+            NbtList Notifications = (NbtList) PlayerData.getNbt("Notifications");
+            System.out.println(Notifications + " send");
+            if (Notifications.isEmpty()) System.out.println("BAD!");
             NbtCompound Notification = new NbtCompound();
             Notification.put("message", (NbtElement) message);
             Notification.putString("type", type);
@@ -50,8 +51,7 @@ public class NotificationManager {
     }
 
     public static NbtList getNotifications(UUID uuid) {
-        DataContainer PlayerData = playerMessages.get(uuid.toString());
-        return (NbtList) PlayerData.getNbt("notifications");
-
+        DataContainer PlayerData = playerMessages.get(uuid);
+        return (NbtList) PlayerData.getNbt("Notifications");
     }
 }

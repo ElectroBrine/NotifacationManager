@@ -21,7 +21,7 @@ import java.util.UUID;
 
 
 public class NotificationLib implements ModInitializer {
-    private static final HashMap<UUID, PlayerEntity> onlinePlayers = new HashMap<>();
+    public static final HashMap<UUID, PlayerEntity> onlinePlayers = new HashMap<>();
     public static Settings settings;
     public static Table playerMessages;
 
@@ -42,24 +42,26 @@ public class NotificationLib implements ModInitializer {
             ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
                 PlayerEntity player = handler.getPlayer();
                 onlinePlayers.put(player.getUuid(), player);
-                if (playerMessages.contains(player.getUuidAsString())) {
-                    DataContainer PlayerData = playerMessages.get(player.getUuidAsString());
-                    NbtList Notifications = (NbtList) PlayerData.getNbt("notifications");
-                    while (Notifications.iterator().hasNext()) {
-                        NbtCompound Notification = (NbtCompound) Notifications.iterator().next();
-                        MutableText Message = (MutableText) Notification.get("message");
-                        NotificationManager.send(player.getUuid(), Message, Notification.getString("type"));
+                if (playerMessages.contains(player.getUuid())) {
+                    NbtList Notifications = NotificationManager.getNotifications(player.getUuid());
+                    System.out.println(Notifications + " database");
+                    if (Notifications != null) {
+                        while (Notifications.iterator().hasNext()) {
+                            NbtCompound Notification = (NbtCompound) Notifications.iterator().next();
+                            MutableText Message = (MutableText) Notification.get("message");
+                            NotificationManager.send(player.getUuid(), Message, Notification.getString("type"));
+                        }
                     }
-                    playerMessages.createDataContainer(player.getUuidAsString());
-
                 } else {
-                    playerMessages.createDataContainer(player.getUuidAsString());
+                    DataContainer dataContainer = playerMessages.createDataContainer(player.getUuid());
+                    dataContainer.put("Notifications", new NbtList());
                 }
             });
 
             ServerPlayConnectionEvents.DISCONNECT.register(((handler, server) -> {
                 PlayerEntity player = handler.getPlayer();
                 onlinePlayers.remove(player.getUuid());
+                NotificationManager.send(player.getUuid(), "This is a test message", NotificationTypes.INFO);
             }));
         }
         else log("Please put in a valid file path");
