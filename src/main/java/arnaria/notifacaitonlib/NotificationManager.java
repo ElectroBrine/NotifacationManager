@@ -53,7 +53,6 @@ public class NotificationManager {
     public static JsonArray getNotifications(UUID uuid) {
         DataContainer PlayerData = playerMessages.get(uuid);
         JsonArray Notifications = PlayerData.getJson("Notifications").getAsJsonArray();
-        PlayerData.dropJson("Notifications");
         PlayerData.put("Notifications", new JsonArray());
         return Notifications;
     }
