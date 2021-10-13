@@ -13,11 +13,9 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.text.Text;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Level;
 
-import java.awt.*;
 import java.util.HashMap;
 import java.util.Objects;
 import java.util.UUID;
@@ -37,9 +35,7 @@ public class NotificationLib implements ModInitializer {
         if (validConfig) {
             log("Notifying our Managers");
             SQLiteDatabase database = new SQLiteDatabase(settings.DATABASE_NAME, settings.SQLITE_DIRECTORY);
-            ServerLifecycleEvents.SERVER_STARTED.register(server -> {
-                playerMessages = database.createTable("Notifications");
-            });
+            ServerLifecycleEvents.SERVER_STARTED.register(server -> playerMessages = database.createTable("Notifications"));
 
 
             ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
