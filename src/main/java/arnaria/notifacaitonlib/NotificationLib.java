@@ -59,7 +59,6 @@ public class NotificationLib implements ModInitializer {
             ServerPlayConnectionEvents.DISCONNECT.register(((handler, server) -> {
                 PlayerEntity player = handler.getPlayer();
                 onlinePlayers.remove(player.getUuid());
-                NotificationManager.send(player.getUuid(), "This is a test message", NotificationTypes.INFO);
             }));
         }
         else log("Please put in a valid file path");
