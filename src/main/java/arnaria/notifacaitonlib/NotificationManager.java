@@ -1,12 +1,14 @@
 package arnaria.notifacaitonlib;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import mrnavastar.sqlib.api.DataContainer;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.MutableText;
 
+import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
 import java.util.UUID;
@@ -36,30 +38,23 @@ public class NotificationManager {
         else {
 
             DataContainer PlayerData = playerMessages.get(uuid);
-            JsonArray Notifications = (JsonArray) PlayerData.getJson("Notifications");
-            JsonArray Notification = new JsonArray();
-            Notification.add(message.toString());
-            Notification.add(type);
+            JsonArray Notifications = PlayerData.getJson("Notifications").getAsJsonArray();
+            JsonObject Notification = new JsonObject();
+            Notification.addProperty("message", message.getString());
+            Notification.addProperty("type", type);
             Notifications.add(Notification);
 
 
             PlayerData.put("Notifications", Notifications);
         }
     }
-                /*
-            NbtList Notifications = (NbtList) PlayerData.getNbt("Notifications");
-            System.out.println(Notifications + " send");
-            if (Notifications.isEmpty()) System.out.println("BAD!");
-            NbtCompound Notification = new NbtCompound();
-            NbtCompound nbtMessage = (NbtCompound) JsonToNBT
-            Notification.put("message", message.toString());
-            Notification.putString("type", type);
-            Notifications.add(Notification);
 
-             */
 
     public static JsonArray getNotifications(UUID uuid) {
         DataContainer PlayerData = playerMessages.get(uuid);
-        return (JsonArray) PlayerData.getJson("Notifications");
+        JsonArray Notifications = PlayerData.getJson("Notifications").getAsJsonArray();
+        PlayerData.dropJson("Notifications");
+        PlayerData.put("Notifications", new JsonArray());
+        return Notifications;
     }
 }

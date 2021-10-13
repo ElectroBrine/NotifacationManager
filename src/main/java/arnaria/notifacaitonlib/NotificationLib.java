@@ -1,6 +1,9 @@
 package arnaria.notifacaitonlib;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.JanksonConfigSerializer;
 import mrnavastar.sqlib.api.DataContainer;
@@ -10,11 +13,11 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.MutableText;
+import net.minecraft.text.Text;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Level;
 
+import java.awt.*;
 import java.util.HashMap;
 import java.util.Objects;
 import java.util.UUID;
@@ -44,13 +47,11 @@ public class NotificationLib implements ModInitializer {
                 onlinePlayers.put(player.getUuid(), player);
                 if (playerMessages.contains(player.getUuid())) {
                     JsonArray Notifications = NotificationManager.getNotifications(player.getUuid());
-                    int count = 0;
-                    System.out.println(Notifications + " database");
                     if (Notifications != null) {
-                        while (count <= Notifications.size()) {
-                            JsonArray Notification = (JsonArray) Notifications.iterator().next();
-                            NotificationManager.send(player.getUuid(), Notification.get(1).getAsString(), Notification.get(2).getAsString());
-                            count++;
+                        for (JsonElement json : Notifications) {
+                            JsonObject Notification = json.getAsJsonObject();
+                            JsonElement message = new JsonParser().parse(String.valueOf(Notification.get("message")));
+                            NotificationManager.send(player.getUuid(), message.getAsString(), Notification.get("type").getAsString());
                         }
                     }
                 } else {
