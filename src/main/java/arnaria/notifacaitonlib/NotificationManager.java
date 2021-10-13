@@ -1,13 +1,12 @@
 package arnaria.notifacaitonlib;
 
+import com.google.gson.JsonArray;
 import mrnavastar.sqlib.api.DataContainer;
 
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
-import net.minecraft.nbt.NbtList;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.MutableText;
+
 import net.minecraft.util.Formatting;
 
 import java.util.UUID;
@@ -37,21 +36,30 @@ public class NotificationManager {
         else {
 
             DataContainer PlayerData = playerMessages.get(uuid);
-
-            NbtList Notifications = (NbtList) PlayerData.getNbt("Notifications");
-            System.out.println(Notifications + " send");
-            if (Notifications.isEmpty()) System.out.println("BAD!");
-            NbtCompound Notification = new NbtCompound();
-            Notification.put("message", (NbtElement) message);
-            Notification.putString("type", type);
+            JsonArray Notifications = (JsonArray) PlayerData.getJson("Notifications");
+            JsonArray Notification = new JsonArray();
+            Notification.add(message.toString());
+            Notification.add(type);
             Notifications.add(Notification);
+
 
             PlayerData.put("Notifications", Notifications);
         }
     }
+                /*
+            NbtList Notifications = (NbtList) PlayerData.getNbt("Notifications");
+            System.out.println(Notifications + " send");
+            if (Notifications.isEmpty()) System.out.println("BAD!");
+            NbtCompound Notification = new NbtCompound();
+            NbtCompound nbtMessage = (NbtCompound) JsonToNBT
+            Notification.put("message", message.toString());
+            Notification.putString("type", type);
+            Notifications.add(Notification);
 
-    public static NbtList getNotifications(UUID uuid) {
+             */
+
+    public static JsonArray getNotifications(UUID uuid) {
         DataContainer PlayerData = playerMessages.get(uuid);
-        return (NbtList) PlayerData.getNbt("Notifications");
+        return (JsonArray) PlayerData.getJson("Notifications");
     }
 }
