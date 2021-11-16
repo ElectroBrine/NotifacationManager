@@ -47,11 +47,12 @@ public class NotificationManager {
     public static ArrayList<MutableText> getNotifications(UUID uuid) {
         DataContainer PlayerData = playerMessages.get(uuid);
         int NotificationCount = PlayerData.getInt("NotificationCount");
-        ArrayList<MutableText> Notifications = new ArrayList<>();
+        ArrayList<MutableText> Notifications = new ArrayList<MutableText>();
         for (int i = 0; i < NotificationCount; i++) {
             Notifications.add(PlayerData.getMutableText(String.valueOf(i)));
         }
         PlayerData.put("NotificationCount", 0);
+        System.out.println(Notifications);
         return Notifications;
     }
 }
