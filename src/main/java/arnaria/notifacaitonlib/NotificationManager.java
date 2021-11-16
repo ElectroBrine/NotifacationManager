@@ -8,6 +8,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.MutableText;
 
+import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
 import java.util.UUID;
@@ -39,7 +40,7 @@ public class NotificationManager {
             DataContainer PlayerData = playerMessages.get(uuid);
             JsonArray Notifications = PlayerData.getJson("Notifications").getAsJsonArray();
             JsonObject Notification = new JsonObject();
-            Notification.addProperty("message", message.getString());
+            Notification.addProperty("message", Text.Serializer.toJson(message));
             Notification.addProperty("type", type);
             Notifications.add(Notification);
 

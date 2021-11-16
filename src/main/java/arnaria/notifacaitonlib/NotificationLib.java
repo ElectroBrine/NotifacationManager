@@ -13,6 +13,7 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.text.Text;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Level;
 
@@ -46,8 +47,8 @@ public class NotificationLib implements ModInitializer {
                     if (Notifications != null) {
                         for (JsonElement json : Notifications) {
                             JsonObject Notification = json.getAsJsonObject();
-                            JsonElement message = new JsonParser().parse(String.valueOf(Notification.get("message")));
-                            NotificationManager.send(player.getUuid(), message.getAsString(), Notification.get("type").getAsString());
+                            JsonElement message = Notification.get("message");
+                            NotificationManager.send(player.getUuid(), Text.Serializer.fromJson(message), Notification.get("type").getAsString());
                         }
                     }
                 } else {

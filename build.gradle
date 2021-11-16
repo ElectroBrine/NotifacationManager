@@ -22,7 +22,7 @@ dependencies {
 
     // PSA: Some older mods, compiled on Loom 0.2.1, might have outdated Maven POMs.
     // You may need to force-disable transitiveness on the
-    modImplementation 'com.github.MrNavaStar:SQLib:23fa6fec3f'
+    modImplementation 'com.github.MrNavaStar:SQLib:766c5c3bd9'
     modApi("me.shedaniel.cloth:cloth-config-fabric:5.0.38") {
         exclude(group: "net.fabricmc.fabric-api")
     }
