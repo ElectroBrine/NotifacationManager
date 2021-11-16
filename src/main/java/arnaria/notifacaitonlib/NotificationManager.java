@@ -23,7 +23,7 @@ public class NotificationManager {
     public static void send(UUID uuid, MutableText message, String type) {
         PlayerEntity player = onlinePlayers.get(uuid);
         MutableText Notification;
-                switch (type) {
+        switch (type) {
             case "ACHIEVEMENT" -> Notification = message.formatted(Formatting.AQUA);
             case "INFO" -> Notification = message.formatted(Formatting.ITALIC).formatted(Formatting.GREEN);
             case "EVENT" -> Notification = message.formatted(Formatting.BOLD).formatted(Formatting.UNDERLINE);
