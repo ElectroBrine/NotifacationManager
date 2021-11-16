@@ -52,7 +52,6 @@ public class NotificationManager {
             System.out.println(PlayerData.getMutableText(String.valueOf(i)));
             Notifications.add(PlayerData.getMutableText(String.valueOf(i)));
         }
-        PlayerData.put("NotificationCount", 0);
         return Notifications;
     }
 }
