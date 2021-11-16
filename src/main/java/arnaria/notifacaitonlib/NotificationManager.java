@@ -38,7 +38,7 @@ public class NotificationManager {
         else {
             DataContainer PlayerData = playerMessages.get(uuid);
             int NotificationCount = PlayerData.getInt("NotificationCount") + 1;
-            PlayerData.put(String.valueOf(NotificationCount), message);
+            PlayerData.put(String.valueOf(NotificationCount), Notification);
             PlayerData.put("NotificationCount", NotificationCount);
         }
     }
@@ -51,6 +51,7 @@ public class NotificationManager {
         for (int i = 0; i < NotificationCount; i++) {
             Notifications.add(PlayerData.getMutableText(String.valueOf(i)));
         }
+        PlayerData.put("NotificationCount", 0);
         return Notifications;
     }
 }

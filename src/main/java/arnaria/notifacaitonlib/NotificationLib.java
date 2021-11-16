@@ -36,14 +36,15 @@ public class NotificationLib implements ModInitializer {
 
             ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
                 PlayerEntity player = handler.getPlayer();
-                onlinePlayers.put(player.getUuid(), player);
-                if (playerMessages.contains(player.getUuid())) {
-                    for (MutableText Notification : NotificationManager.getNotifications(player.getUuid())) {
-                        NotificationManager.send(player.getUuid(), Notification, "None");
+                UUID playerUUID = player.getUuid();
+                onlinePlayers.put(playerUUID, player);
+                if (playerMessages.contains(playerUUID)) {
+                    for (MutableText Notification : NotificationManager.getNotifications(playerUUID)) {
+                        NotificationManager.send(playerUUID, Notification, "None");
                     }
 
                 } else {
-                    playerMessages.createDataContainer(player.getUuid());
+                    playerMessages.createDataContainer(playerUUID);
                 }
             });
 
