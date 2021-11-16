@@ -1,16 +1,14 @@
 package arnaria.notifacaitonlib;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import mrnavastar.sqlib.api.DataContainer;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.MutableText;
 
-import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 import static arnaria.notifacaitonlib.NotificationLib.onlinePlayers;
@@ -24,36 +22,35 @@ public class NotificationManager {
 
     public static void send(UUID uuid, MutableText message, String type) {
         PlayerEntity player = onlinePlayers.get(uuid);
+        MutableText Notification;
+                switch (type) {
+            case "ACHIEVEMENT" -> Notification = message.formatted(Formatting.AQUA);
+            case "INFO" -> Notification = message.formatted(Formatting.ITALIC).formatted(Formatting.GREEN);
+            case "EVENT" -> Notification = message.formatted(Formatting.BOLD).formatted(Formatting.UNDERLINE);
+            case "WARN" -> Notification = message.formatted(Formatting.GOLD).formatted(Formatting.ITALIC);
+            case "ERROR" -> Notification = message.formatted(Formatting.DARK_RED).formatted(Formatting.BOLD).formatted(Formatting.UNDERLINE);
+            case "ENDER" -> Notification = message.formatted(Formatting.UNDERLINE).formatted(Formatting.STRIKETHROUGH).formatted(Formatting.ITALIC).formatted(Formatting.DARK_PURPLE).formatted(Formatting.OBFUSCATED);
+            default -> Notification = message;
+        }
         if (player != null) {
-            switch (type) {
-                case "ACHIEVEMENT" -> player.sendMessage(message.formatted(Formatting.AQUA), false);
-                case "INFO" -> player.sendMessage(message.formatted(Formatting.ITALIC).formatted(Formatting.GREEN), false);
-                case "EVENT" -> player.sendMessage(message.formatted(Formatting.BOLD).formatted(Formatting.UNDERLINE), false);
-                case "WARN" -> player.sendMessage(message.formatted(Formatting.GOLD).formatted(Formatting.ITALIC), false);
-                case "ERROR" -> player.sendMessage(message.formatted(Formatting.DARK_RED).formatted(Formatting.BOLD).formatted(Formatting.UNDERLINE), false);
-                case "ENDER" -> player.sendMessage(message.formatted(Formatting.UNDERLINE).formatted(Formatting.STRIKETHROUGH).formatted(Formatting.ITALIC).formatted(Formatting.DARK_PURPLE).formatted(Formatting.OBFUSCATED), false);
-                default -> player.sendMessage(message, false);
-            }
+                player.sendMessage(Notification, false);
         }
         else {
-
             DataContainer PlayerData = playerMessages.get(uuid);
-            JsonArray Notifications = PlayerData.getJson("Notifications").getAsJsonArray();
-            JsonObject Notification = new JsonObject();
-            Notification.addProperty("message", Text.Serializer.toJson(message));
-            Notification.addProperty("type", type);
-            Notifications.add(Notification);
-
-
-            PlayerData.put("Notifications", Notifications);
+            int NotificationCount = PlayerData.getInt("NotificationCount") + 1;
+            PlayerData.put(String.valueOf(NotificationCount), message);
+            PlayerData.put("NotificationCount", NotificationCount);
         }
     }
 
 
-    public static JsonArray getNotifications(UUID uuid) {
+    public static ArrayList<MutableText> getNotifications(UUID uuid) {
         DataContainer PlayerData = playerMessages.get(uuid);
-        JsonArray Notifications = PlayerData.getJson("Notifications").getAsJsonArray();
-        PlayerData.put("Notifications", new JsonArray());
+        int NotificationCount = PlayerData.getInt("NotificationCount");
+        ArrayList<MutableText> Notifications = new ArrayList<>();
+        for (int i = 0; i < NotificationCount; i++) {
+            Notifications.add(PlayerData.getMutableText(String.valueOf(i)));
+        }
         return Notifications;
     }
 }

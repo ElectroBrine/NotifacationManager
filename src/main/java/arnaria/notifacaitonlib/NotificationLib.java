@@ -1,19 +1,14 @@
 package arnaria.notifacaitonlib;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.JanksonConfigSerializer;
-import mrnavastar.sqlib.api.DataContainer;
 import mrnavastar.sqlib.api.Table;
 import mrnavastar.sqlib.api.databases.SQLiteDatabase;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.text.Text;
+import net.minecraft.text.MutableText;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Level;
 
@@ -43,17 +38,12 @@ public class NotificationLib implements ModInitializer {
                 PlayerEntity player = handler.getPlayer();
                 onlinePlayers.put(player.getUuid(), player);
                 if (playerMessages.contains(player.getUuid())) {
-                    JsonArray Notifications = NotificationManager.getNotifications(player.getUuid());
-                    if (Notifications != null) {
-                        for (JsonElement json : Notifications) {
-                            JsonObject Notification = json.getAsJsonObject();
-                            JsonElement message = Notification.get("message");
-                            NotificationManager.send(player.getUuid(), Text.Serializer.fromJson(message), Notification.get("type").getAsString());
-                        }
+                    for (MutableText Notification : NotificationManager.getNotifications(player.getUuid())) {
+                        NotificationManager.send(player.getUuid(), Notification, "None");
                     }
+
                 } else {
-                    DataContainer dataContainer = playerMessages.createDataContainer(player.getUuid());
-                    dataContainer.put("Notifications", new JsonArray());
+                    playerMessages.createDataContainer(player.getUuid());
                 }
             });
 
