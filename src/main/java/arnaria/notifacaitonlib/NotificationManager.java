@@ -37,7 +37,7 @@ public class NotificationManager {
         }
         else {
             DataContainer PlayerData = playerMessages.get(uuid);
-            int NotificationCount = PlayerData.getInt("NotificationCount") + 1;
+            int NotificationCount = PlayerData.getInt("NotificationCount")+1;
             PlayerData.put(String.valueOf(NotificationCount), Notification);
             PlayerData.put("NotificationCount", NotificationCount);
         }
@@ -48,10 +48,11 @@ public class NotificationManager {
         DataContainer PlayerData = playerMessages.get(uuid);
         int NotificationCount = PlayerData.getInt("NotificationCount");
         ArrayList<MutableText> Notifications = new ArrayList<>();
-        for (int i = 1; i < NotificationCount; i++) {
-            System.out.println(PlayerData.getMutableText(String.valueOf(i)));
+        for (int i = 1; i <= NotificationCount; i++) {
             Notifications.add(PlayerData.getMutableText(String.valueOf(i)));
+            PlayerData.dropMutableText(String.valueOf(i));
         }
+        PlayerData.put("NotificationCount", 0);
         return Notifications;
     }
 }
