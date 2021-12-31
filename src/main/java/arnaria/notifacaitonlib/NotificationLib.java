@@ -39,6 +39,10 @@ public class NotificationLib implements ModInitializer {
                 UUID playerUUID = player.getUuid();
                 onlinePlayers.put(playerUUID, player);
                 if (playerMessages.contains(playerUUID)) {
+                    if (Math.random()*100 == 1) {
+                        NotificationManager.send(player.getUuid(), "The End calls for your aid", NotificationTypes.ENDER);
+                    }
+                    else NotificationManager.send(player.getUuid(), "Welcome back" + player.getName() + "!", NotificationTypes.INFO);
                     if (playerMessages.get(playerUUID).getInt("NotificationCount") != -1) {
                         for (MutableText Notification : NotificationManager.getNotifications(playerUUID)) {
                             NotificationManager.send(playerUUID, Notification, "None");
@@ -54,10 +58,6 @@ public class NotificationLib implements ModInitializer {
             ServerPlayConnectionEvents.DISCONNECT.register(((handler, server) -> {
                 PlayerEntity player = handler.getPlayer();
                 onlinePlayers.remove(player.getUuid());
-                if (Math.random()*100 == 1) {
-                    NotificationManager.send(player.getUuid(), "The End calls for your aid", NotificationTypes.ENDER);
-                }
-                else NotificationManager.send(player.getUuid(), "Welcome back" + player.getName() + "!", NotificationTypes.INFO);
             }));
         }
         else log("Please put in a valid file path");
