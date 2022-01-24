@@ -42,7 +42,7 @@ public class NotificationLib implements ModInitializer {
                     if (Math.random()*100 == 1) {
                         NotificationManager.send(player.getUuid(), "The End calls for your aid", NotificationTypes.ENDER);
                     }
-                    else NotificationManager.send(player.getUuid(), "Welcome back" + player.getName() + "!", NotificationTypes.INFO);
+                    else NotificationManager.send(player.getUuid(), "Welcome back" + player.getName().asString() + "!", NotificationTypes.INFO);
                     if (playerMessages.get(playerUUID).getInt("NotificationCount") != -1) {
                         for (MutableText Notification : NotificationManager.getNotifications(playerUUID)) {
                             NotificationManager.send(playerUUID, Notification, "None");
