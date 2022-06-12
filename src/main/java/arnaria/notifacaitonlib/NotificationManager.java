@@ -3,9 +3,9 @@ package arnaria.notifacaitonlib;
 import mrnavastar.sqlib.api.DataContainer;
 
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.MutableText;
 
+import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
 import java.util.ArrayList;
@@ -17,7 +17,7 @@ import static arnaria.notifacaitonlib.NotificationLib.playerMessages;
 public class NotificationManager {
 
     public static void send(UUID uuid, String message, String type) {
-        send(uuid, new LiteralText(message).formatted(), type);
+        send(uuid, Text.literal(message), type);
     }
 
     public static void send(UUID uuid, MutableText message, String type) {
