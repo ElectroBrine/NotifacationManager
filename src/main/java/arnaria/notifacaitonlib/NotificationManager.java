@@ -49,7 +49,7 @@ public class NotificationManager {
         int NotificationCount = PlayerData.getInt("NotificationCount");
         ArrayList<MutableText> Notifications = new ArrayList<>();
         for (int i = 1; i <= NotificationCount; i++) {
-            Notifications.add(PlayerData.getMutableText(String.valueOf(i)));
+            Notifications.add(PlayerData.getText(String.valueOf(i)));
             PlayerData.dropMutableText(String.valueOf(i));
         }
         PlayerData.put("NotificationCount", 0);
